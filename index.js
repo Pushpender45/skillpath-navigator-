@@ -18,7 +18,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Root route for health check
 app.get('/', (req, res) => {
-    res.send('Job Query API is running...');
+    res.status(200).json({ status: 'ok', message: 'Job Query API is running...' });
+});
+
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'healthy' });
 });
 
 // Routes
@@ -33,4 +37,6 @@ mongoose.connect(MONGO_URI)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+});
