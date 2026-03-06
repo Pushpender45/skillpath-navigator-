@@ -16,6 +16,11 @@ app.use(cors());
 // Serve uploads folder as static
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Root route for health check
+app.get('/', (req, res) => {
+    res.send('Job Query API is running...');
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobcards', jobCardRoutes);
