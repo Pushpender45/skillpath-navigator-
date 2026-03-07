@@ -67,6 +67,73 @@ router.put('/change-password', auth, async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: "Error updating password" });
     }
+    // 4. Toggle Topic Progress
+    router.post('/progress', auth, async (req, res) => {
+        try {
+            const { cardId, topic } = req.body;
+            const user = await User.findById(req.user.id);
+
+            // Find if user already has progress for this card
+            let pathProgress = user.progress.find(p => p.cardId.toString() === cardId);
+
+            if (!pathProgress) {
+                // New path progress entry
+                user.progress.push({ cardId, completedTopics: [topic] });
+            } else {
+                // Toggle the topic in the array
+                const index = pathProgress.completedTopics.indexOf(topic);
+                if (index === -1) {
+                    pathProgress.completedTopics.push(topic);
+                } else {
+                    pathProgress.completedTopics.splice(index, 1);
+                }
+            }
+
+            await user.save();
+            res.json(user.progress);
+        } catch (err) {
+            res.status(500).json({ message: "Error updating progress" });
+        }
+    });
+
+});
+
+// 4. Update Topic Progress
+router.put('/progress', auth, async (req, res) => {
+    try {
+        const { cardId, completedTopics } = req.body;
+
+        if (!cardId) {
+            return res.status(400).json({ message: "cardId is required" });
+        }
+
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Initialize progress if it doesn't exist
+        if (!user.progress) {
+            user.progress = [];
+        }
+
+        // Find existing progress for this card
+        const progressIndex = user.progress.findIndex(p => p.cardId.toString() === cardId.toString());
+
+        if (progressIndex !== -1) {
+            // Update existing entry
+            user.progress[progressIndex].completedTopics = completedTopics;
+        } else {
+            // Add new entry
+            user.progress.push({ cardId, completedTopics });
+        }
+
+        await user.save();
+        res.json(user.progress);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error updating progress" });
+    }
 });
 
 module.exports = router;
