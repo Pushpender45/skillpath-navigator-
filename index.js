@@ -11,7 +11,12 @@ const path = require('path');
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+// Enable CORS for your Vercel frontend
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Fallback to local Vite port
+    credentials: true
+}));
 
 // Serve uploads folder as static
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
