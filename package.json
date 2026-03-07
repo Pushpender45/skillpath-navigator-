@@ -1,7 +1,7 @@
 {
-  "name": "server",
+  "name": "skill-path-server",
   "version": "1.0.0",
-  "description": "Backend part of the Job Query application.",
+  "description": "Backend part of the SkillPath application.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

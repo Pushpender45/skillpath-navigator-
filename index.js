@@ -40,7 +40,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Root route for health check
 app.get('/', (req, res) => {
-    res.status(200).json({ status: 'ok', message: 'Job Query API is running...' });
+    res.status(200).json({ status: 'ok', message: 'SkillPath API is running...' });
 });
 
 app.get('/health', (req, res) => {
